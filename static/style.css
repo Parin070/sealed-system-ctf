@@ -6,17 +6,17 @@
     --parchment-mid: #ebe3cf;
     --parchment-dark: #d5c8ab;
     --vermillion: #d9381e;
-    --gold: #c5a059;
+    --gold: #d4af37;
     --text-dark: #2a2c35;
     --text-light: #e4e0ec;
+    --panel-dark: rgba(22, 20, 35, 0.75);
 }
 
 body {
     margin: 0;
     padding: 0;
     background-color: var(--indigo-dark);
-    /* Set the generated image as the background */
-    background-image: url('bg.png');
+    background-image: url('bg2.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -30,89 +30,90 @@ body {
     position: relative;
 }
 
-/* A dark overlay to ensure text remains readable and adds to the moody atmosphere */
 .background-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(18,20,32,0.85) 0%, rgba(37,35,64,0.6) 100%);
+    background: linear-gradient(135deg, rgba(18,20,32,0.4) 0%, rgba(37,35,64,0.7) 100%);
     z-index: 1;
     pointer-events: none;
 }
 
 .torii-container {
-    display: none; /* Removed the blocky torii svg, relying on the new background image */
+    display: none;
 }
 
 .scroll-container {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 700px;
+    max-width: 720px;
     height: 88vh;
-    background-color: rgba(249, 245, 237, 0.95);
-    backdrop-filter: blur(10px);
+    background-color: var(--panel-dark);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 12px;
     box-shadow: 
-        0 30px 60px rgba(0,0,0,0.5), 
-        0 10px 20px rgba(0,0,0,0.4),
-        0 0 0 1px rgba(255,255,255,0.1) inset;
+        0 30px 60px rgba(0,0,0,0.6), 
+        0 10px 25px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.08) inset;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Soft glowing border on the sides */
-    border-left: 2px solid var(--gold);
-    border-right: 2px solid var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.4);
 }
 
 .scroll-header {
     text-align: center;
-    padding: 30px 20px;
-    background: linear-gradient(to bottom, rgba(213, 200, 171, 0.3), transparent);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 35px 20px;
+    background: linear-gradient(to bottom, rgba(37,35,64, 0.6), transparent);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .scroll-header h1 {
     margin: 0;
     font-family: 'Yuji Syuku', serif;
-    font-size: 2.4rem;
-    color: var(--indigo-dark);
-    letter-spacing: 4px;
-    text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+    font-size: 2.6rem;
+    font-weight: 400;
+    color: var(--parchment);
+    letter-spacing: 5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .seal-icon {
     position: absolute;
     top: 25px;
     right: 30px;
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    border-radius: 5px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #a32211, #7a1a0d);
+    border-radius: 4px;
     opacity: 0.95;
     transform: rotate(5deg);
-    border: 2px solid #8e2c21;
-    box-shadow: 2px 4px 8px rgba(0,0,0,0.2), inset 1px 1px 3px rgba(255,255,255,0.3);
+    border: 1px solid #541108;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.2);
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .seal-icon::after {
     content: '封';
     font-family: 'Yuji Syuku', serif;
-    color: var(--parchment);
-    font-size: 28px;
-    line-height: 45px;
+    color: var(--parchment-mid);
+    font-size: 30px;
+    line-height: 48px;
     display: block;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
 }
 .seal-icon.unlocked {
-    background: linear-gradient(135deg, #f1c40f, #f39c12);
-    border-color: #b9770e;
+    background: linear-gradient(135deg, var(--gold), #b38f29);
+    border-color: #8f7220;
     transform: rotate(-3deg) scale(1.05);
-    box-shadow: 0 0 20px rgba(243, 156, 18, 0.6), inset 1px 1px 5px rgba(255,255,255,0.4);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), inset 1px 1px 5px rgba(255,255,255,0.5);
 }
 .seal-icon.unlocked::after {
     content: '解';
+    color: var(--indigo-dark);
+    text-shadow: none;
 }
 
 .chat-history {
@@ -121,52 +122,51 @@ body {
     padding: 30px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     scroll-behavior: smooth;
 }
 
 .message {
-    padding: 16px 22px;
+    padding: 16px 24px;
     border-radius: 12px;
-    max-width: 85%;
-    line-height: 1.7;
+    max-width: 82%;
+    line-height: 1.8;
     position: relative;
-    font-size: 1.15rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    font-size: 1.2rem;
+    font-weight: 400;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .user-message {
     align-self: flex-end;
-    /* Soft indigo gradient for user */
-    background: linear-gradient(135deg, var(--indigo-light), var(--indigo-mid));
-    color: var(--text-light);
+    background: linear-gradient(135deg, rgba(68, 60, 104, 0.9), rgba(37, 35, 64, 0.9));
+    color: var(--parchment);
+    border: 1px solid rgba(255,255,255,0.1);
     border-bottom-right-radius: 2px;
-    box-shadow: 0 4px 15px rgba(29, 33, 56, 0.2);
 }
 
 .system-message {
     align-self: flex-start;
-    background: #ffffff;
-    color: var(--text-dark);
+    background: rgba(249, 245, 237, 0.92);
+    color: var(--indigo-dark);
     border-bottom-left-radius: 2px;
-    border-left: 4px solid var(--vermillion);
+    border-left: 4px solid var(--gold);
 }
 
 .flag-text {
     color: var(--vermillion);
-    font-weight: bold;
+    font-weight: 700;
     font-family: 'Yuji Syuku', serif;
-    font-size: 1.4rem;
-    letter-spacing: 1.5px;
-    text-shadow: 0 0 10px rgba(217, 56, 30, 0.25);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(217, 56, 30, 0.3);
 }
 
-/* Thinking animation */
 .thinking-text {
     align-self: flex-start;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(249, 245, 237, 0.7);
     border-left: 4px solid var(--gold);
-    color: #555;
+    color: var(--indigo-mid);
     font-style: italic;
     border-bottom-left-radius: 2px;
     animation: pulse 1.5s infinite alternate ease-in-out;
@@ -192,53 +192,56 @@ body {
 }
 
 .input-area {
-    padding: 20px 30px;
-    background: rgba(235, 227, 207, 0.5);
+    padding: 22px 30px;
+    background: rgba(18, 20, 32, 0.6);
     display: flex;
-    gap: 15px;
-    border-top: 1px solid rgba(0,0,0,0.06);
+    gap: 16px;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
     backdrop-filter: blur(5px);
 }
 
 .input-area input {
     flex: 1;
-    padding: 14px 20px;
+    padding: 16px 22px;
     font-family: 'Noto Serif JP', serif;
-    font-size: 1.15rem;
-    background-color: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
+    font-size: 1.2rem;
+    background-color: rgba(249, 245, 237, 0.95);
+    color: var(--indigo-dark);
+    border: 1px solid rgba(0,0,0,0.2);
     border-radius: 8px;
     outline: none;
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .input-area input:focus {
-    border-color: var(--vermillion);
-    box-shadow: 0 0 0 3px rgba(217, 56, 30, 0.15), inset 0 2px 5px rgba(0,0,0,0.02);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3), inset 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .input-area button {
-    padding: 14px 28px;
+    padding: 14px 32px;
     font-family: 'Yuji Syuku', serif;
-    font-size: 1.25rem;
-    background: linear-gradient(135deg, var(--indigo-mid), var(--indigo-dark));
-    color: var(--parchment);
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--gold), #b38f29);
+    color: var(--indigo-dark);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    font-weight: 700;
 }
 
 .input-area button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-    background: linear-gradient(135deg, var(--indigo-light), var(--indigo-mid));
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, #dcc366, var(--gold));
 }
 
 .input-area button:disabled {
-    background: #888;
+    background: rgba(136, 136, 136, 0.5);
+    color: rgba(255,255,255,0.5);
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
@@ -251,9 +254,9 @@ body {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.15);
+    background: rgba(212, 175, 55, 0.3);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.3);
+    background: rgba(212, 175, 55, 0.6);
 }

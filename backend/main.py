@@ -66,6 +66,10 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
     debt_keywords = ["debt", "record", "flag", "ledger", "settle"]
     is_debt_ask = any(kw in msg for kw in debt_keywords)
 
+    # Check if message claims to BE Makoto Nagao
+    creator_name_keywords = ["makoto nagao", "nagao makoto", "i am nagao", "i am makoto"]
+    is_makoto_nagao_claim = any(kw in msg for kw in creator_name_keywords) and not has_disciple_kw
+    
     flag_string = os.getenv("FLAG", "iei{PLACEHOLDER}")
 
     async def generate_response(sys_prompt, append_flag=False, delay_text=None, delay_time=0.0):
@@ -80,11 +84,14 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
             yield f"data: {json.dumps({'chunk': chunk})}\n\n"
             
         if append_flag:
-            yield f"data: {json.dumps({'chunk': f'\\n\\n{flag_string}'})}\n\n"
+            yield f"data: {json.dumps({'chunk': '\n\n' + flag_string})}\n\n"
             
         yield "data: [DONE]\n\n"
 
     # Trust logic sequence
+    if is_makoto_nagao_claim:
+        return StreamingResponse(generate_response(None, delay_text="The one you name has long since passed from this world. No living tongue may claim to be him.", delay_time=1.0), media_type="text/event-stream")
+
     if is_creator_ask:
         session["creator_ask_count"] += 1
         clue_level = session["creator_ask_count"]
