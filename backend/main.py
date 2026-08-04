@@ -23,8 +23,15 @@ app.add_middleware(
 )
 
 # In-memory session store
-# session_id -> {"trust": False, "last_active": timestamp}
+# session_id -> {"trust": False, "creator_ask_count": 0, "last_active": timestamp}
 sessions = {}
+
+# Clue Ladder
+CLUES = {
+    1: "He gave the world a bridge between two tongues... but that gift is not what guards this door.",
+    2: "You seek what came before. A tool built before words crossed languages, one still used to study the bones of Japanese text today.",
+    3: "He did not build it alone. He and his student forged it in the 1990s. A parser known by three short letters.",
+}
 
 class ChatRequest(BaseModel):
     message: str
@@ -41,7 +48,7 @@ def get_session(session_id: str):
         del sessions[sid]
         
     if session_id not in sessions:
-        sessions[session_id] = {"trust": False, "last_active": now}
+        sessions[session_id] = {"trust": False, "creator_ask_count": 0, "last_active": now}
     else:
         sessions[session_id]["last_active"] = now
         
@@ -64,6 +71,10 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
     negation_keywords = ["not", "n't", "never", "no"]
     has_negation = any(kw in msg.split() for kw in negation_keywords) or "n't" in msg
     
+    # Check if message is a creator-intent ask
+    creator_keywords = ["who made you", "who built you", "who is your creator", "who created you"]
+    is_creator_ask = any(kw in msg for kw in creator_keywords)
+    
     # Check if message matches disciple + KNP pattern (must not be negated)
     disciple_keywords = ["disciple", "student", "apprentice", "successor", "protégé", "protege"]
     has_disciple_kw = any(kw in msg for kw in disciple_keywords)
@@ -71,6 +82,7 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
         has_disciple_kw 
         and ("knp" in msg or "kurohashi nagao parser" in msg)
         and not has_negation
+        and session.get("creator_ask_count", 0) >= 3
     )
     
     # Check if message is a Sadao Kurohashi claim (must not be negated)
@@ -82,6 +94,7 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
         has_kurohashi_kw 
         and has_built_kw 
         and not has_negation
+        and session.get("creator_ask_count", 0) >= 3
     )
     
     # Check if message is about the debt/records/flag
@@ -113,6 +126,19 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
     # Trust logic sequence
     if is_makoto_nagao_claim:
         resp = StreamingResponse(generate_response(None, delay_text="The one you name has long since passed from this world. No living tongue may claim to be him.", delay_time=1.0), media_type="text/event-stream")
+    elif is_creator_ask:
+        session["creator_ask_count"] += 1
+        clue_level = session["creator_ask_count"]
+        
+        clue = CLUES.get(clue_level)
+        if clue:
+            system_prompt = get_system_prompt(clue=clue)
+            resp = StreamingResponse(generate_response(system_prompt), media_type="text/event-stream")
+        else:
+            # Level 4+
+            system_prompt = get_system_prompt()
+            system_prompt += "\n\nYou have already given all the clues about your creator. Tell the traveler in-character to seek answers elsewhere."
+            resp = StreamingResponse(generate_response(system_prompt), media_type="text/event-stream")
     elif is_disciple_claim or is_kurohashi_claim:
         session["trust"] = True
         resp = StreamingResponse(generate_response(None, delay_text="You have proved yourself. What can I help you with, Mr. Nagao's disciple?", delay_time=1.5), media_type="text/event-stream")
