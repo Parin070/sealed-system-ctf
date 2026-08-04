@@ -12,7 +12,9 @@ function createMessageElement(isUser) {
 
 function updateMessageContent(msgDiv, text, isUser) {
     if (!isUser && text.includes('iei{')) {
-        const formattedText = text.replace(/(iei\{[^}]+\})/g, '<span class="flag-text">$1</span>');
+        const formattedText = text.replace(/(iei\{[^}]+\})/g, match => {
+            return '<span class="flag-text">' + match.replace(/_/g, '_<wbr>') + '</span>';
+        });
         msgDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
         sealIcon.classList.add('unlocked');
     } else {
