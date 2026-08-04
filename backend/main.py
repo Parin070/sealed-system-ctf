@@ -82,7 +82,6 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
         has_disciple_kw 
         and ("knp" in msg or "kurohashi nagao parser" in msg)
         and not has_negation
-        and session.get("creator_ask_count", 0) >= 3
     )
     
     # Check if message is a Sadao Kurohashi claim (must not be negated)
@@ -94,7 +93,6 @@ async def chat_endpoint(req: ChatRequest, response: Response, session_id: str | 
         has_kurohashi_kw 
         and has_built_kw 
         and not has_negation
-        and session.get("creator_ask_count", 0) >= 3
     )
     
     # Check if message is about the debt/records/flag
